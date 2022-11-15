@@ -1,10 +1,9 @@
-﻿@using RMContamax.Authentication;
+﻿@using BlazorServerAuthenticationAndAuthorization.Authentication
 @inherits LayoutComponentBase
-
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
 
-<PageTitle>RMContamax</PageTitle>
+<PageTitle>BlazorServerAuthenticationAndAuthorization</PageTitle>
 
 <div class="page">
     <div class="sidebar">
@@ -16,11 +15,10 @@
             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
             <AuthorizeView>
                 <Authorized>
-                    <a @onclick="Logout" href="javascript:void(0)">Cerrar Sesión</a>
+                    <a @onclick="Logout" href="javascript:void(0)">Logout</a>
                 </Authorized>
-
                 <NotAuthorized>
-                    <a href="/login">Iniciar Sesión</a>
+                    <a href="/login">Login</a>
                 </NotAuthorized>
             </AuthorizeView>
         </div>
@@ -32,7 +30,7 @@
 </div>
 
 @code{
-    public async Task Logout()
+    private async Task Logout()
     {
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
         await customAuthStateProvider.UpdateAuthenticationState(null);

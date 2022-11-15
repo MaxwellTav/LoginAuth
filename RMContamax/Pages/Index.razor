@@ -1,16 +1,14 @@
 ﻿@page "/"
-
 @inject IJSRuntime js
 
 <PageTitle>Index</PageTitle>
 
 <AuthorizeView>
     <Authorized>
-        <h1>¡Bienvenido, @context.User.Identity.Name!.</h1>
+        <h1>Hello, @context.User.Identity.Name!</h1>
     </Authorized>
-
     <NotAuthorized>
-        <h1>¡Sesión no iniciada!.</h1>
+        <h1>Hello, Guest!</h1>
     </NotAuthorized>
 </AuthorizeView>
 
@@ -21,7 +19,7 @@ Welcome to your new app.
 <AuthorizeView>
     <Authorized>
         <br /><br />
-        <button @onclick="DisplayAlert" class="btn btn-outline-primary"> Mensaje de bienvenida. </button>
+        <button class="btn btn-outline-primary" @onclick="DisplayGreetingAlert">Display Greeting Alert</button>
     </Authorized>
 </AuthorizeView>
 
@@ -29,10 +27,10 @@ Welcome to your new app.
     [CascadingParameter]
     private Task<AuthenticationState> authenticationState { get; set; }
 
-    public async Task DisplayAlert()
+    private async Task DisplayGreetingAlert()
     {
         var authState = await authenticationState;
-        var message = $"Hola, {authState.User.Identity.Name}";
+        var message = $"Hello {authState.User.Identity.Name}";
         await js.InvokeVoidAsync("alert", message);
     }
 }

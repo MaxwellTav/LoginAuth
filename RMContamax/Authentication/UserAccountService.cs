@@ -1,4 +1,4 @@
-﻿namespace RMContamax.Authentication
+﻿namespace BlazorServerAuthenticationAndAuthorization.Authentication
 {
     public class UserAccountService
     {
@@ -6,10 +6,10 @@
 
         public UserAccountService()
         {
-            _users = new List<UserAccount>()
+            _users = new List<UserAccount>
             {
-                new UserAccount { UserName = "admin", Password = "admin", Role = "Administrator" },
-                new UserAccount { UserName = "user", Password = "user", Role = "User" },
+                new UserAccount{ UserName = "admin", Password = "admin", Role = "Administrator" },
+                new UserAccount{ UserName = "user", Password = "user", Role = "User" }
             };
         }
 

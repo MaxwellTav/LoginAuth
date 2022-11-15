@@ -1,4 +1,4 @@
-﻿namespace RMContamax.Authentication
+﻿namespace BlazorServerAuthenticationAndAuthorization.Authentication
 {
     public class UserAccount
     {

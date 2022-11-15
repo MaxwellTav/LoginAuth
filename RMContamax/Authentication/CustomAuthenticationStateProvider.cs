@@ -2,16 +2,14 @@
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using System.Security.Claims;
 
-namespace RMContamax.Authentication
+namespace BlazorServerAuthenticationAndAuthorization.Authentication
 {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
-        readonly ProtectedSessionStorage _sessionStorage;
-        ClaimsPrincipal _anonimous = new ClaimsPrincipal(new ClaimsIdentity());
+        private readonly ProtectedSessionStorage _sessionStorage;
+        private ClaimsPrincipal _anonymous = new ClaimsPrincipal(new ClaimsIdentity());
 
-        string userSesionString = "UserSession";
-
-        public CustomAuthenticationStateProvider(ProtectedSessionStorage sessionStorage, ClaimsPrincipal anonimous)
+        public CustomAuthenticationStateProvider(ProtectedSessionStorage sessionStorage)
         {
             _sessionStorage = sessionStorage;
         }
@@ -20,46 +18,44 @@ namespace RMContamax.Authentication
         {
             try
             {
-                var userSesionStorageResult = await _sessionStorage.GetAsync<UserSesion>(userSesionString);
-                var userSession = userSesionStorageResult.Success ? userSesionStorageResult.Value : null;
-
+                //await Task.Delay(5000);
+                var userSessionStorageResult = await _sessionStorage.GetAsync<UserSession>("UserSession");
+                var userSession = userSessionStorageResult.Success ? userSessionStorageResult.Value : null;
                 if (userSession == null)
-                    return await Task.FromResult(new AuthenticationState(_anonimous));
-
+                    return await Task.FromResult(new AuthenticationState(_anonymous));
                 var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
                 {
-                   new Claim(ClaimTypes.Name, userSession.UserName),
-                   new Claim(ClaimTypes.Role, userSession.Role),
+                    new Claim(ClaimTypes.Name, userSession.UserName),
+                    new Claim(ClaimTypes.Role, userSession.Role)
                 }, "CustomAuth"));
-
                 return await Task.FromResult(new AuthenticationState(claimsPrincipal));
-                return await Task.FromResult(new AuthenticationState(_anonimous));
             }
             catch
-            { return await Task.FromResult(new AuthenticationState(_anonimous)); }
+            {
+                return await Task.FromResult(new AuthenticationState(_anonymous));
+            }
         }
 
-        public async Task UpdateAuthenticationState(UserSesion userSession)
+        public async Task UpdateAuthenticationState(UserSession userSession)
         {
             ClaimsPrincipal claimsPrincipal;
 
             if (userSession != null)
             {
-                await _sessionStorage.SetAsync(userSesionString, userSession);
-
+                await _sessionStorage.SetAsync("UserSession", userSession);
                 claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
                 {
-                   new Claim(ClaimTypes.Name, userSession.UserName),
-                   new Claim(ClaimTypes.Role, userSession.Role),
+                    new Claim(ClaimTypes.Name, userSession.UserName),
+                    new Claim(ClaimTypes.Role, userSession.Role)
                 }));
             }
             else
             {
-                await _sessionStorage.DeleteAsync(userSesionString);
-                claimsPrincipal = _anonimous;
-
-                NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
+                await _sessionStorage.DeleteAsync("UserSession");
+                claimsPrincipal = _anonymous;
             }
+
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
         }
     }
 }

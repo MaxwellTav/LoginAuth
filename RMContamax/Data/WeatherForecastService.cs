@@ -1,4 +1,4 @@
-namespace RMContamax.Data
+namespace BlazorServerAuthenticationAndAuthorization.Data
 {
     public class WeatherForecastService
     {
