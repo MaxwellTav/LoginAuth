@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using System.Security.Claims;
-//using System.Security.Claims;
 
 namespace RMContamax.Authentication
 {
@@ -27,13 +26,13 @@ namespace RMContamax.Authentication
                 if (userSession == null)
                     return await Task.FromResult(new AuthenticationState(_anonimous));
 
-                //var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
-                //{
-                //   new Claim(ClaimTypes.Name, userSession.UserName),
-                //   new Claim(ClaimTypes.Role, userSession.Role),
-                //}, "CustomAuth"));
+                var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
+                {
+                   new Claim(ClaimTypes.Name, userSession.UserName),
+                   new Claim(ClaimTypes.Role, userSession.Role),
+                }, "CustomAuth"));
 
-                //return await Task.FromResult(new AuthenticationState(claimsPrincipal));
+                return await Task.FromResult(new AuthenticationState(claimsPrincipal));
                 return await Task.FromResult(new AuthenticationState(_anonimous));
             }
             catch
